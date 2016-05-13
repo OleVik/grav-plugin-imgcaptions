@@ -1,0 +1,26 @@
+name: Image Captions
+version: 1.0.0
+description: "Turns the title-attribute in img-elements into figure-elements with a figcaption."
+icon: asterisk
+author:
+  name: Ole Vik
+  email: git@olevik.me
+  url: http://olevik.me
+homepage: https://github.com/olevik/grav-plugin-imgcaptions
+keywords: caption, captions, figure, figcaption
+bugs: https://github.com/olevik/grav-plugin-imgcaptions/issues
+license: MIT
+
+form:
+  validation: loose
+  fields:
+    dropdown.enabled:
+        type: toggle
+        label: Dropdown in navbar
+        highlight: 1
+        default: 1
+        options:
+          1: PLUGIN_ADMIN.ENABLED
+          0: PLUGIN_ADMIN.DISABLED
+        validate:
+          type: bool
