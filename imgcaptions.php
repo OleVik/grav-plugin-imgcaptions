@@ -21,15 +21,14 @@ class ImgCaptionsPlugin extends Plugin
             if ($pluginsobject['imgcaptions']['enabled']) {
 				$buffer = $page->content();
 				$url = $page->url();
-				/* Unwrap images from their paragraphs first */
+				/* Unwrap <img> from <p>, rewrap in <figure> */
 				$buffer = preg_replace("/<p>\s*?(<a .*<img.*<\/a>|<img.*)?\s*<\/p>/",
-                    "$1",
+                    "<figure>$1</figure>",
                     $buffer);
 				/* If img-elements have a title set by Markdown, 
-				*  wrap them within <figure> and the title within 
-				*  <figcaption>. */
+				*  append them as <figcaption> them within <figure>. */
 				$buffer = preg_replace("/<img[^>]*?title=\x22([^\x22]*)\x22[^>]*?src=\x22([^\x22]*)[^>]*?>|<img[^>]*?src=\x22([^\x22]*)\x22[^>]*?title=\x22([^\x22]*)\x22[^>]*?>/",
-					"<figure>$0<figcaption>$1</figcaption></figure>",
+					"$0<figcaption>$1</figcaption>",
 					$buffer);
 				$page->setRawContent($buffer);
             }
