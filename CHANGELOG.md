@@ -1,3 +1,9 @@
+# v1.2.0
+## 21/June/2016
+
+1. [](#improved)
+    * Transport class-attribute from img-element to figure-element
+
 # v1.1.0
 ## 21/June/2016
 
