@@ -8,10 +8,6 @@ To this:
 
 	<figure><img title="Street view from the east" alt="Street view" src="street.jpg"><figcaption>Street view from the east</figcaption></figure>
 
-This is only applied to images with the `title`-attribute set:
-
-	![Image Alt](file.jpg "TITLE")
-
 **Note:** The plugin unwraps images from paragraphs, ie. removes enclosing `<p>`-elements from `<img>`-elements, as `<figure>`-elements are invalid HTML within paragraphs.
 
 # Installation and Configuration

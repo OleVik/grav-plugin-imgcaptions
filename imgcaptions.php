@@ -21,9 +21,12 @@ class ImgCaptionsPlugin extends Plugin
             if ($pluginsobject['imgcaptions']['enabled']) {
 				$buffer = $page->content();
 				$url = $page->url();
-				/* Unwrap <img> from <p>, rewrap in <figure>, 
-				*  include class-attribute if set. */
-				$buffer = preg_replace("/<p>\s*?(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)?\s*<\/p>/",
+				/* Unwrap <img> from <p> */
+				$buffer = preg_replace("/<p>\s*?(<a .*<img.*<\/a>|<img.*)?\s*<\/p>/",
+					"$1",
+					$buffer);
+				/* Wrap <img> in <figure>, include class-attribute if set. */
+				$buffer = preg_replace("/(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)/",
                     '<figure$2>$1</figure>',
                     $buffer);
 				/* If img-elements have a title set by Markdown, 
