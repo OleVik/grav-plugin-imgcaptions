@@ -1,3 +1,8 @@
+# v1.2.2
+## 09/Jan/2017
+1. [](#bugfix)
+     * Fixed blueprint for admin interface
+
 # v1.2.1
 ## 2/July/2016
 1. [](#improved)
