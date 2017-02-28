@@ -1,25 +1,43 @@
+# v1.2.3
+## 28-02-2017
+
+1. [](#improved)
+    * Code cleanup
+    * PSR-1 and PSR-2 compliance
+    * Change plugin icon
+    * Update readme
+2. [](#new)
+    * Document class and methods
+3. [](#bugfix)
+    * Fix changelog format
+
 # v1.2.2
-## 09/Jan/2017
+## 09-01-2017
+
 1. [](#bugfix)
-     * Fixed blueprint for admin interface
+    * Fixed blueprint for admin interface
 
 # v1.2.1
-## 2/July/2016
+## 02-07-2016
+
 1. [](#improved)
     * Separate unwrap-step to increase case-coverage
 
 # v1.2.0
-## 21/June/2016
+## 21-06-2016
+
 1. [](#improved)
     * Transport class-attribute from img-element to figure-element
 
 # v1.1.0
-## 21/June/2016
+## 21-06-2016
+
 1. [](#improved)
     * Wrap all images in figure-element for consistency
     * Add figcaption only where title is set
 
 # v1.0.0
-## 13/May/2016
+## 13-05-2016
+
 1. [](#new)
     * Initial release

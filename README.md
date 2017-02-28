@@ -1,6 +1,10 @@
 # [Grav](http://getgrav.org/) Image Captions Plugin
 
-Wraps images in `<figure>` and captions in `<figcaption>` based on the `title`-attribute of the `img`-element. From this:
+Wraps images in `<figure>` and captions in `<figcaption>` based on the `title`-attribute of the `img`-element. From this Markdown:
+
+	![Street view](street.jpg "Street view from the east")
+
+Which outputs this HTML:
 
 	<p><img title="Street view from the east" alt="Street view" src="street.jpg"></p>
 
