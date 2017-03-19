@@ -1,3 +1,11 @@
+# v1.2.4
+## 19-03-2017
+
+1. [](#improved)
+    * Regex capture for title-attribute
+3. [](#bugfix)
+    * Varied cases of img-tags
+
 # v1.2.3
 ## 28-02-2017
 

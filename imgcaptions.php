@@ -54,7 +54,7 @@ class ImgCaptionsPlugin extends Plugin
                 $buffer = preg_replace($wrap, '<figure$2>$1</figure>', $buffer);
 
                 /* If img-elements have a title set by Markdown, append them as <figcaption> them within <figure>. */
-                $title = "/<img[^>]*?title=\x22([^\x22]*)\x22[^>]*?src=\x22([^\x22]*)[^>]*?>|<img[^>]*?src=\x22([^\x22]*)\x22[^>]*?title=\x22([^\x22]*)\x22[^>]*?>/";
+                $title = "/<img[^>]*?title[ ]*=[ ]*[\"'](.*?)[\"'][^>]*?>/";
                 $buffer = preg_replace($title, "$0<figcaption>$1</figcaption>", $buffer);
 
                 $page->setRawContent($buffer);
