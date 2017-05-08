@@ -1,3 +1,11 @@
+# v1.2.5
+## 08-05-2017
+
+1. [](#improved)
+    * Regex capture for title-attribute
+3. [](#bugfix)
+    * Single-quotes removed from title-regex, facilitating them in title-strings
+
 # v1.2.4
 ## 19-03-2017
 
