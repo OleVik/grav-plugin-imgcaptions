@@ -1,3 +1,9 @@
+# v1.2.6
+## 29-05-2017
+
+1. [](#improved)
+    * Enhance accessibility of `figure`
+
 # v1.2.5
 ## 08-05-2017
 
