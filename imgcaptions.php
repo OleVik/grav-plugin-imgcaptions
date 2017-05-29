@@ -51,7 +51,7 @@ class ImgCaptionsPlugin extends Plugin
 
                 /* Wrap <img> in <figure>, include class-attribute if set. */
                 $wrap = "/(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)/";
-                $buffer = preg_replace($wrap, '<figure$2>$1</figure>', $buffer);
+                $buffer = preg_replace($wrap, '<figure role="group" $2>$1</figure>', $buffer);
 
                 /* If img-elements have a title set by Markdown, append them as <figcaption> them within <figure>. */
                 $title = "/<img[^>]*?title[ ]*=[ ]*[\"](.*?)[\"][^>]*?>/";
