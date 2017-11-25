@@ -1,0 +1,6 @@
+<figure role="group">
+    <img {% for attr, value in attrs %}{{ value ? attr ~ '="' ~ value ~ '"' : '' }}{% endfor %} />
+    {% if attrs['title'] %}
+        <figcaption>{{ attrs['title'] }}</figcaption>
+    {% endif %}
+</figure>

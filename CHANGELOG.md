@@ -1,3 +1,15 @@
+# v2.0.0-beta1
+## 25-11-2017
+
+1. [](#new)
+    * Changed name to 'ImgCaptions'
+    * Added template-rendering
+    * Added Markdown-mode
+    * Added Event override
+    * Added unit tests
+2. [](#improved)
+    * Refactored plugin
+
 # v1.2.6
 ## 29-05-2017
 

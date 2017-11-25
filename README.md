@@ -25,4 +25,8 @@ You should now have all the plugin files under
 
 The plugin is enabled by default, and can be disabled by copying `user/plugins/imgcaptions/imgcaptions.yaml` into `user/config/plugins/imgcaptions.yaml` and setting `enabled: false`.
 
-MIT License 2016 by [Ole Vik](http://github.com/olevik).
+# Running tests
+
+Run `composer update` to install the testing dependencies. Then run `composer test` in the root folder. Finally, run `composer update --no-dev` to uninstall the testing dependencies.
+
+MIT License 2017 by [Ole Vik](http://github.com/olevik).

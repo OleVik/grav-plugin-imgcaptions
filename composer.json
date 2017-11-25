@@ -1,0 +1,18 @@
+{
+    "name": "https://github.com/OleVik/grav-plugin-imgcaptions",
+    "description": "Grav ImgCaptions Plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ole Vik",
+            "email": "git@olevik.net"
+        }
+    ],
+    "require-dev": {
+        "codeception/codeception": "^2.3",
+        "erusev/parsedown": "^1.6"
+    },
+    "scripts": {
+        "test": "php vendor/Codeception/Codeception/codecept run unit"
+    }
+}
