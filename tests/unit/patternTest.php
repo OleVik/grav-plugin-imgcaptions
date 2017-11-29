@@ -37,7 +37,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     /**
      * PCRE-pattern for parsing Markdown image-links
      */
-    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'id|classes)\=.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)/';
+    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'id|classes)\=.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)\s?(?\'extra\'\{.*\})?/';
 
     /**
      * PCRE-pattern for parsing HTML img-tags
@@ -86,6 +86,14 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
             '![My Image](image.jpg?id=special-id&classes=float-left "Title")',
             '![My Image](image.jpg?id=special-id&classes=float-left,shadow "Title")'
         ];
+        $this->testDataExtra = array();
+        foreach ($this->testData as $data) {
+            $this->testDataExtra[] = $data . '{#id}';
+            $this->testDataExtra[] = $data . '{.class}';
+            $this->testDataExtra[] = $data . '{attr=ibute}';
+            $this->testDataExtra[] = $data . '{#id .class}';
+            $this->testDataExtra[] = $data . '{#id .class attr=ibute}';
+        }
     }
 
     /**
@@ -106,6 +114,18 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     {
         $testData = array_merge($this->testData, $this->testDataTitles);
         foreach ($testData as $string) {
+            $this->assertRegexp($this::REGEX_MARKDOWN_LINK, $string);
+        }
+    }
+
+    /**
+     * Test PCRE-pattern for parsing Markdown Extra image-links
+     *
+     * @return void
+     */
+    public function testMarkdownExtra()
+    {
+        foreach ($this->testDataExtra as $string) {
             $this->assertRegexp($this::REGEX_MARKDOWN_LINK, $string);
         }
     }

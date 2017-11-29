@@ -19,7 +19,7 @@ use RocketTheme\Toolbox\Event\Event;
  */
 class ImgCaptionsPlugin extends Plugin
 {
-    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'id|classes)\=.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)/';
+    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'id|classes)\=.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)\s?(?\'extra\'\{.*\})?/';
     const REGEX_IMG = "/(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)/";
     const REGEX_IMG_P = "/<p>\s*?(<a .*<img.*<\/a>|<img.*)?\s*<\/p>/";
     const REGEX_IMG_TITLE = "/<img[^>]*?title[ ]*=[ ]*[\"](.*?)[\"][^>]*?>/";
@@ -79,7 +79,6 @@ class ImgCaptionsPlugin extends Plugin
      */
     public function output(Event $event)
     {
-        $this->grav['debugger']->addMessage('Output');
         $page = $event['page'];
         $uri = $this->grav['uri'];
         $uri = $uri->base().$page->rawRoute();
@@ -108,6 +107,41 @@ class ImgCaptionsPlugin extends Plugin
                         $attrs['class'] = str_replace(',', ' ', $classes);
                     } else {
                         $attrs['type'] = $match['type'];
+                    }
+                }
+                if (isset($match['extra'])) {
+                    $extra = trim($match['extra'], '{}');
+                    $extras = explode(' ', $extra);
+                    $id = $classes = $attributes = array();
+                    foreach ($extras as $extra) {
+                        if ($this::_startsWith($extra, '#')) {
+                            $id[] = substr($extra, 1);
+                        } elseif ($this::_startsWith($extra, '.')) {
+                            $classes[] = substr($extra, 1);
+                        } else {
+                            $attributes[] = $extra;
+                        }
+                    }
+                    if (!empty($id)) {
+                        $attrs['id'] = implode(' ', $id);
+                        if (!isset($match['type']) && $match['type'] == 'id') {
+                            $attrs['id'] = $attrs['id'] . ' ' . implode(' ', $id);
+                        } else {
+                            $attrs['id'] = implode(' ', $id);
+                        }
+                    }
+                    if (!empty($classes)) {
+                        if (!isset($match['type']) && $match['type'] == 'classes') {
+                            $attrs['class'] = $attrs['class'] . ' ' . implode(' ', $classes);
+                        } else {
+                            $attrs['class'] = implode(' ', $classes);
+                        }
+                    }
+                    if (!empty($attributes)) {
+                        foreach ($attributes as $attribute) {
+                            $attribute = explode('=', $attribute);
+                            $attrs[$attribute[0]] = $attribute[1];
+                        }
                     }
                 }
                 $replace = $twig->processTemplate(
@@ -141,5 +175,19 @@ class ImgCaptionsPlugin extends Plugin
     public function onTwigTemplatePaths()
     {
         $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
+    }
+
+    /**
+     * Find first character in string.
+     *
+     * @param string $haystack Character
+     * @param string $needle   String
+     * 
+     * @return boolean
+     */
+    private function _startsWith($haystack, $needle)
+    {
+        $length = strlen($needle);
+        return (substr($haystack, 0, $length) === $needle);
     }
 }

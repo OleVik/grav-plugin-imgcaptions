@@ -1,3 +1,10 @@
+# v2.0.0-beta2
+## 30-11-2017
+
+1. [](#improved)
+    * Regex-capture pattern to include Markdown Extra syntax
+    * Unit tests to include Markdown Extra syntax
+
 # v2.0.0-beta1
 ## 25-11-2017
 
