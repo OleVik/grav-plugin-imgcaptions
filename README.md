@@ -1,4 +1,4 @@
-# [Grav](http://getgrav.org/) Image Captions Plugin
+# [Grav](http://getgrav.org/) Img Captions Plugin
 
 Wraps images in `<figure>` and captions in `<figcaption>` based on the `title`-attribute of the `img`-element. From this Markdown:
 

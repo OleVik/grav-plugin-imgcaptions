@@ -1,5 +1,5 @@
 name: Img Captions
-version: 2.0.0-beta2
+version: 2.0.0
 description: "Turns the title-attribute in img-elements into figure-elements with a figcaption."
 icon: file-image-o
 author:
