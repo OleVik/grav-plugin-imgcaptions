@@ -1,5 +1,11 @@
 <figure role="group">
+    {% if url %}
+    <a href="{{ url }}">
+    {% endif %}
     <img {% for attr, value in attrs %}{{ value ? attr ~ '="' ~ value ~ '"' : '' }}{% endfor %} />
+    {% if url %}
+    </a>
+    {% endif %}
     {% if attrs['title'] %}
         <figcaption>{{ attrs['title'] }}</figcaption>
     {% endif %}

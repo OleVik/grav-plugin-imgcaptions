@@ -37,7 +37,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     /**
      * PCRE-pattern for parsing Markdown image-links
      */
-    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'id|classes)\=.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)\s?(?\'extra\'\{.*\})?/';
+    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'\?id|classes|.*)\=*.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)(?\'extra\'\{.*\})?(?\'url\'___https?:\/\/.*)?/';
 
     /**
      * PCRE-pattern for parsing HTML img-tags
@@ -53,6 +53,11 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
      * PCRE-pattern for parsing title-attribute in HTML img-tags
      */
     const REGEX_IMG_TITLE = "/<img[^>]*?title[ ]*=[ ]*[\"](.*?)[\"][^>]*?>/";
+
+    /**
+     * PCRE-pattern for parsing Markdown image-links wrapped in anchor-links
+     */
+    const REGEX_IMG_WRAPPING_LINK = '/\[(?\'image\'\!.*)\]\((?\'url\'https?:\/\/.*)\)/';
 
     /**
      * Execute before tests
@@ -72,7 +77,9 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
             '![My Image](image.jpg?classes=float-left)',
             '![My Image](image.jpg?classes=float-left,shadow)',
             '![My Image](image.jpg?id=special-id)',
-            '![My Image](image.jpg?id=special-id&classes=float-left)'
+            '![My Image](image.jpg?id=special-id&classes=float-left)',
+            '![](IMG_20161229.jpg?resize=600,400)',
+            '![](image.png?lightbox)'
         ];
         $this->testDataTitles = [
             '![](image.jpg "Title")',
@@ -84,7 +91,9 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
             '![My Image](image.jpg?classes=float-left,shadow "Title")',
             '![My Image](image.jpg?id=special-id "Title")',
             '![My Image](image.jpg?id=special-id&classes=float-left "Title")',
-            '![My Image](image.jpg?id=special-id&classes=float-left,shadow "Title")'
+            '![My Image](image.jpg?id=special-id&classes=float-left,shadow "Title")',
+            '![](IMG_20161229.jpg?resize=600,400 "La boîte du Bookeen Cybo")',
+            '![](image.png?lightbox "caption text")'
         ];
         $this->testDataExtra = array();
         foreach ($this->testData as $data) {
@@ -93,6 +102,17 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
             $this->testDataExtra[] = $data . '{attr=ibute}';
             $this->testDataExtra[] = $data . '{#id .class}';
             $this->testDataExtra[] = $data . '{#id .class attr=ibute}';
+        }
+        $this->testDataAnchorWrappers = array();
+        foreach ($this->testData as $data) {
+            $this->testDataAnchorWrappers[] = '[' . $data . '](http://google.com)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](http://google.com/)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](http://www.google.com)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](http://www.google.com/)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](https://google.com)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](https://google.com/)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](https://www.google.com)';
+            $this->testDataAnchorWrappers[] = '[' . $data . '](https://www.google.com/)';
         }
     }
 
@@ -168,6 +188,18 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
         foreach ($this->testDataTitles as $string) {
             $parsed = $this->parsedown->text($string);
             $this->assertRegexp($this::REGEX_IMG_TITLE, $parsed);
+        }
+    }
+
+    /**
+     * Test PCRE-pattern for parsing Markdown image-links wrapped in anchor-links
+     *
+     * @return void
+     */
+    public function testImageAnchorWrappers()
+    {
+        foreach ($this->testDataAnchorWrappers as $string) {
+            $this->assertRegexp($this::REGEX_IMG_WRAPPING_LINK, $string);
         }
     }
 }

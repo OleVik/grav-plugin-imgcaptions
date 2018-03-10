@@ -1,3 +1,12 @@
+# v2.1.0
+## 10-03-2018
+
+1. [](#improved)
+    * Refactored patterns
+    * Wrapping images in anchors now renders properly
+2. [](#new)
+    * If image is wrapped in anchor, `url` is passed to template
+
 # v2.0.0
 ## 09-12-2017
 

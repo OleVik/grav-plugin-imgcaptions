@@ -19,10 +19,11 @@ use RocketTheme\Toolbox\Event\Event;
  */
 class ImgCaptionsPlugin extends Plugin
 {
-    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'id|classes)\=.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)\s?(?\'extra\'\{.*\})?/';
+    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'\?id|classes|.*)\=*.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)(?\'extra\'\{.*\})?(?\'url\'___https?:\/\/.*)?/';
     const REGEX_IMG = "/(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)/";
     const REGEX_IMG_P = "/<p>\s*?(<a .*<img.*<\/a>|<img.*)?\s*<\/p>/";
     const REGEX_IMG_TITLE = "/<img[^>]*?title[ ]*=[ ]*[\"](.*?)[\"][^>]*?>/";
+    const REGEX_IMG_WRAPPING_LINK = '/\[(?\'image\'\!.*)\]\((?\'url\'https?:\/\/.*)\)/';
 
     /**
      * Register events with Grav
@@ -88,6 +89,17 @@ class ImgCaptionsPlugin extends Plugin
         $content = $page->getRawContent();
         if ($config['mode'] == 'markdown') {
             preg_match_all(
+                $this::REGEX_IMG_WRAPPING_LINK,
+                $content,
+                $wrappers,
+                PREG_SET_ORDER
+            );
+            if (count($wrappers) != 0) {
+                foreach ($wrappers as $wrap) {
+                    $content = str_replace($wrap[0], $wrap['image'] . '___' . $wrap['url'], $content);
+                }
+            }
+            preg_match_all(
                 $this::REGEX_MARKDOWN_LINK,
                 $content,
                 $matches,
@@ -105,18 +117,16 @@ class ImgCaptionsPlugin extends Plugin
                     } elseif ($match['type'] == 'classes') {
                         $classes = substr($match['grav'], strpos($match['grav'], "=") + 1);
                         $attrs['class'] = str_replace(',', ' ', $classes);
-                    } else {
-                        $attrs['type'] = $match['type'];
                     }
                 }
-                if (isset($match['extra'])) {
+                if (isset($match['extra']) && !empty($match['extra'])) {
                     $extra = trim($match['extra'], '{}');
                     $extras = explode(' ', $extra);
                     $id = $classes = $attributes = array();
                     foreach ($extras as $extra) {
-                        if ($this::_startsWith($extra, '#')) {
+                        if (self::_startsWith($extra, '#')) {
                             $id[] = substr($extra, 1);
-                        } elseif ($this::_startsWith($extra, '.')) {
+                        } elseif (self::_startsWith($extra, '.')) {
                             $classes[] = substr($extra, 1);
                         } else {
                             $attributes[] = $extra;
@@ -139,17 +149,29 @@ class ImgCaptionsPlugin extends Plugin
                     }
                     if (!empty($attributes)) {
                         foreach ($attributes as $attribute) {
-                            $attribute = explode('=', $attribute);
-                            $attrs[$attribute[0]] = $attribute[1];
+                            if (self::_contains($attribute, '=')) {
+                                $attribute = explode('=', $attribute);
+                                $attrs[$attribute[0]] = $attribute[1];
+                            }
                         }
                     }
                 }
-                $replace = $twig->processTemplate(
-                    'partials/figure.html.twig', 
-                    [
-                        'attrs' => $attrs
-                    ]
-                );
+                if (isset($match['url']) && !empty($match['url'])) {
+                    $replace = $twig->processTemplate(
+                        'partials/figure.html.twig', 
+                        [
+                            'attrs' => $attrs,
+                            'url' => trim($match['url'], '_')
+                        ]
+                    );
+                } else {
+                    $replace = $twig->processTemplate(
+                        'partials/figure.html.twig', 
+                        [
+                            'attrs' => $attrs
+                        ]
+                    );
+                }
                 $content = str_replace($match[0], $replace, $content);
             }
         } elseif ($config['mode'] == 'html') {
@@ -185,9 +207,41 @@ class ImgCaptionsPlugin extends Plugin
      * 
      * @return boolean
      */
-    private function _startsWith($haystack, $needle)
+    private static function _startsWith($haystack, $needle)
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
+    }
+
+    /**
+     * Search for string in string
+     *
+     * @param string $haystack String to search
+     * @param string $needle   String to search for
+     * 
+     * @see https://stackoverflow.com/a/30128453/603387
+     * 
+     * @return void
+     */
+    private static function _contains($haystack, $needle)
+    {
+        if (mb_strpos($needle, $haystack) !== false) {
+            return true;
+        }
+    }
+
+    /**
+     * Recursive array_map implementation
+     *
+     * @param callable $func  Internal PHP-function
+     * @param array    $array Array to map
+     * 
+     * @see http://php.net/manual/en/function.array-map.php#116938
+     * 
+     * @return array
+     */
+    private static function _arrayMapRecursive(callable $func, array $array)
+    {
+        return filter_var($array, \FILTER_CALLBACK, ['options' => $func]);
     }
 }
