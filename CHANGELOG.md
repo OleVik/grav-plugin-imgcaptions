@@ -1,3 +1,9 @@
+# v2.2.0
+## 02-06-2018
+
+1. [](#improved)
+    * Replaced a couple of helper-methods with Grav Util ones
+
 # v2.1.0
 ## 10-03-2018
 

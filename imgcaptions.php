@@ -4,6 +4,7 @@ namespace Grav\Plugin;
 use Grav\Common\Grav;
 use Grav\Common\Plugin;
 use Grav\Common\Uri;
+use Grav\Common\Utils;
 use Grav\Common\Page\Page;
 use Grav\Common\Twig\Twig;
 use RocketTheme\Toolbox\Event\Event;
@@ -124,9 +125,9 @@ class ImgCaptionsPlugin extends Plugin
                     $extras = explode(' ', $extra);
                     $id = $classes = $attributes = array();
                     foreach ($extras as $extra) {
-                        if (self::_startsWith($extra, '#')) {
+                        if (Utils::startsWith($extra, '#')) {
                             $id[] = substr($extra, 1);
-                        } elseif (self::_startsWith($extra, '.')) {
+                        } elseif (Utils::startsWith($extra, '.')) {
                             $classes[] = substr($extra, 1);
                         } else {
                             $attributes[] = $extra;
@@ -149,7 +150,7 @@ class ImgCaptionsPlugin extends Plugin
                     }
                     if (!empty($attributes)) {
                         foreach ($attributes as $attribute) {
-                            if (self::_contains($attribute, '=')) {
+                            if (Utils::contains($attribute, '=')) {
                                 $attribute = explode('=', $attribute);
                                 $attrs[$attribute[0]] = $attribute[1];
                             }
@@ -197,51 +198,5 @@ class ImgCaptionsPlugin extends Plugin
     public function onTwigTemplatePaths()
     {
         $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
-    }
-
-    /**
-     * Find first character in string.
-     *
-     * @param string $haystack Character
-     * @param string $needle   String
-     * 
-     * @return boolean
-     */
-    private static function _startsWith($haystack, $needle)
-    {
-        $length = strlen($needle);
-        return (substr($haystack, 0, $length) === $needle);
-    }
-
-    /**
-     * Search for string in string
-     *
-     * @param string $haystack String to search
-     * @param string $needle   String to search for
-     * 
-     * @see https://stackoverflow.com/a/30128453/603387
-     * 
-     * @return void
-     */
-    private static function _contains($haystack, $needle)
-    {
-        if (mb_strpos($needle, $haystack) !== false) {
-            return true;
-        }
-    }
-
-    /**
-     * Recursive array_map implementation
-     *
-     * @param callable $func  Internal PHP-function
-     * @param array    $array Array to map
-     * 
-     * @see http://php.net/manual/en/function.array-map.php#116938
-     * 
-     * @return array
-     */
-    private static function _arrayMapRecursive(callable $func, array $array)
-    {
-        return filter_var($array, \FILTER_CALLBACK, ['options' => $func]);
     }
 }
