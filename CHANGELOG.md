@@ -1,3 +1,16 @@
+# v3.0.0-beta.1
+## 26-07-2019
+
+1. [](#new)
+   - Access to Page and Media in template
+   - Per-page configuration from FrontMatter, excluding `mode`
+   - Implementation of a regular expression query builder
+2. [](#improved)
+   - Template-formating, elevate class to figure
+   - Use template to render in HTML-mode
+   - Tests
+   - Code-quality
+
 # v2.2.0
 ## 02-06-2018
 

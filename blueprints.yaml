@@ -1,5 +1,5 @@
 name: Img Captions
-version: 2.2.0
+version: 3.0.0-beta.1
 description: "Turns the title-attribute in img-elements into figure-elements with a figcaption."
 icon: file-image-o
 author:
@@ -11,7 +11,7 @@ keywords: caption, captions, figure, figcaption, image, images, image caption
 bugs: https://github.com/olevik/grav-plugin-imgcaptions/issues
 license: MIT
 dependencies:
-  - { name: grav, version: '>=1.3' }
+  - { name: grav, version: ">=1.6" }
 
 form:
   validation: loose

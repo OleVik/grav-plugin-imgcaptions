@@ -1,34 +1,52 @@
 <?php
+/**
+ * ImgCaptions Plugin
+ *
+ * PHP version 7
+ *
+ * @category   Extensions
+ * @package    Grav
+ * @subpackage Scholar
+ * @author     Ole Vik <git@olevik.net>
+ * @license    http://www.opensource.org/licenses/mit-license.html MIT License
+ * @link       https://github.com/OleVik/grav-plugin-imgcaptions
+ */
 namespace Grav\Plugin;
 
-use Grav\Common\Grav;
 use Grav\Common\Plugin;
-use Grav\Common\Uri;
 use Grav\Common\Utils;
 use Grav\Common\Page\Page;
+use Grav\Common\Page\Pages;
 use Grav\Common\Twig\Twig;
 use RocketTheme\Toolbox\Event\Event;
+use Grav\Plugin\ImgCaptionsPlugin\API\HTML;
+use Grav\Plugin\ImgCaptionsPlugin\API\Markdown;
+use Grav\Plugin\ImgCaptionsPlugin\API\Source;
+use Grav\Plugin\ImgCaptionsPlugin\API\Regex;
 
 /**
  * Turns the title-attribute in img-elements into figure-elements with a figcaption
  *
  * Class ImgCaptionsPlugin
- * 
- * @package Grav\Plugin
- * @return  void
- * @license MIT License by Ole Vik
+ *
+ * @category Extensions
+ * @package  Grav\Plugin
+ * @author   Ole Vik <git@olevik.net>
+ * @license  http://www.opensource.org/licenses/mit-license.html MIT License
+ * @link     https://github.com/OleVik/grav-plugin-imgcaptions
  */
 class ImgCaptionsPlugin extends Plugin
 {
-    const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'\?id|classes|.*)\=*.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)(?\'extra\'\{.*\})?(?\'url\'___https?:\/\/.*)?/';
-    const REGEX_IMG = "/(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)/";
-    const REGEX_IMG_P = "/<p>\s*?(<a .*<img.*<\/a>|<img.*)?\s*<\/p>/";
-    const REGEX_IMG_TITLE = "/<img[^>]*?title[ ]*=[ ]*[\"](.*?)[\"][^>]*?>/";
-    const REGEX_IMG_WRAPPING_LINK = '/\[(?\'image\'\!.*)\]\((?\'url\'https?:\/\/.*)\)/';
+    /**
+     * Protected variables
+     *
+     * @var string $mode Grav cache setting
+     */
+    protected $mode;
 
     /**
      * Register events with Grav
-     * 
+     *
      * @return array
      */
     public static function getSubscribedEvents()
@@ -40,152 +58,64 @@ class ImgCaptionsPlugin extends Plugin
 
     /**
      * Initialize the plugin
-     * 
+     *
      * @return array
      */
     public function onPluginsInitialized()
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin() || $this->config->get('plugins.imgcaptions.enabled') !== true) {
             return;
         }
         
-        $config = (array) $this->config->get('plugins');
-        $config = $config['imgcaptions'];
+        $config = (array) $this->config->get('plugins.imgcaptions');
+        $this->mode = $config['mode'];
         if (!isset($config['event'])) {
-            if ($config['mode'] == 'markdown') {
+            if ($this->mode == 'markdown') {
                 $event = 'onPageContentRaw';
-            } elseif ($config['mode'] == 'html') {
+            } elseif ($this->mode == 'html') {
                 $event = 'onPageContentProcessed';
             }
         } else {
             $event = $config['event'];
         }
-        if ($config['enabled']) {
-            $this->enable(
-                [
-                    $event => ['output', 0],
-                    'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0]
-                ]
-            );
-        } else {
-            return;
-        }
+        $this->enable(
+            [
+                $event => ['output', 0],
+                'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0]
+            ]
+        );
     }
 
     /**
      * Finds images in page content and rewraps as figures with figcaptions
      *
      * @param Event $event Instance of RocketTheme\Toolbox\Event\Event
-     * 
+     *
      * @return void
      */
     public function output(Event $event)
     {
         $page = $event['page'];
-        $uri = $this->grav['uri'];
-        $uri = $uri->base().$page->rawRoute();
-        $twig = $this->grav['twig'];
-        $config = (array) $this->config->get('plugins');
-        $config = $config['imgcaptions'];
+        $config = (array) $this->config->get('plugins.imgcaptions');
+        $header = (array) $page->header();
+        if (isset($header['imgcaptions'])) {
+            $config = Utils::arrayMergeRecursiveUnique(
+                $config,
+                $header['imgcaptions']
+            );
+        }
+        if ($config['enabled'] !== true) {
+            return;
+        }
+        include __DIR__ . '/vendor/autoload.php';
+        $Source = new Source($page, $this->grav['pages']);
         $content = $page->getRawContent();
-        if ($config['mode'] == 'markdown') {
-            preg_match_all(
-                $this::REGEX_IMG_WRAPPING_LINK,
-                $content,
-                $wrappers,
-                PREG_SET_ORDER
-            );
-            if (count($wrappers) != 0) {
-                foreach ($wrappers as $wrap) {
-                    $content = str_replace($wrap[0], $wrap['image'] . '___' . $wrap['url'], $content);
-                }
-            }
-            preg_match_all(
-                $this::REGEX_MARKDOWN_LINK,
-                $content,
-                $matches,
-                PREG_SET_ORDER
-            );
-            foreach ($matches as $match) {
-                $attrs = array();
-                $attrs['src'] = $uri.DS.$match['file'].$match['ext'];
-                $attrs['alt'] = (isset($match['alt']) ? $match['alt'] : '');
-                $attrs['title'] = (isset($match['title']) ? $match['title'] : '');
-                if (isset($match['type'])) {
-                    if ($match['type'] == 'id') {
-                        $id = substr($match['grav'], strpos($match['grav'], "=") + 1);
-                        $attrs['id'] = $id;
-                    } elseif ($match['type'] == 'classes') {
-                        $classes = substr($match['grav'], strpos($match['grav'], "=") + 1);
-                        $attrs['class'] = str_replace(',', ' ', $classes);
-                    }
-                }
-                if (isset($match['extra']) && !empty($match['extra'])) {
-                    $extra = trim($match['extra'], '{}');
-                    $extras = explode(' ', $extra);
-                    $id = $classes = $attributes = array();
-                    foreach ($extras as $extra) {
-                        if (Utils::startsWith($extra, '#')) {
-                            $id[] = substr($extra, 1);
-                        } elseif (Utils::startsWith($extra, '.')) {
-                            $classes[] = substr($extra, 1);
-                        } else {
-                            $attributes[] = $extra;
-                        }
-                    }
-                    if (!empty($id)) {
-                        $attrs['id'] = implode(' ', $id);
-                        if (!isset($match['type']) && $match['type'] == 'id') {
-                            $attrs['id'] = $attrs['id'] . ' ' . implode(' ', $id);
-                        } else {
-                            $attrs['id'] = implode(' ', $id);
-                        }
-                    }
-                    if (!empty($classes)) {
-                        if (!isset($match['type']) && $match['type'] == 'classes') {
-                            $attrs['class'] = $attrs['class'] . ' ' . implode(' ', $classes);
-                        } else {
-                            $attrs['class'] = implode(' ', $classes);
-                        }
-                    }
-                    if (!empty($attributes)) {
-                        foreach ($attributes as $attribute) {
-                            if (Utils::contains($attribute, '=')) {
-                                $attribute = explode('=', $attribute);
-                                $attrs[$attribute[0]] = $attribute[1];
-                            }
-                        }
-                    }
-                }
-                if (isset($match['url']) && !empty($match['url'])) {
-                    $replace = $twig->processTemplate(
-                        'partials/figure.html.twig', 
-                        [
-                            'attrs' => $attrs,
-                            'url' => trim($match['url'], '_')
-                        ]
-                    );
-                } else {
-                    $replace = $twig->processTemplate(
-                        'partials/figure.html.twig', 
-                        [
-                            'attrs' => $attrs
-                        ]
-                    );
-                }
-                $content = str_replace($match[0], $replace, $content);
-            }
-        } elseif ($config['mode'] == 'html') {
-            $content = $page->content();
-
-            $unwrap = $this::REGEX_IMG_P;
-            $content = preg_replace($unwrap, "$1", $content);
-
-            $wrap = $this::REGEX_IMG;
-            $content = preg_replace($wrap, '<figure role="group" $2>$1</figure>', $content);
-
-            $title = $this::REGEX_IMG_TITLE;
-            $content = preg_replace($title, "$0<figcaption>$1</figcaption>", $content);
+        if ($this->mode == 'markdown') {
+            $Markdown = new Markdown($this->grav['twig'], $Source);
+            $content = $Markdown->render($content);
+        } elseif ($this->mode == 'html') {
+            $HTML = new HTML($this->grav['twig'], $Source);
+            $content = $HTML->render($content);
         }
         $page->setRawContent($content);
     }

@@ -1,14 +1,28 @@
 <?php
+/**
+ * ImgCaptions Plugin, Unit Tests
+ *
+ * PHP version 7
+ *
+ * @category API
+ * @package  Grav\Plugin\ImgCaptionsPlugin
+ * @author   Ole Vik <git@olevik.net>
+ * @license  http://www.opensource.org/licenses/mit-license.html MIT License
+ * @link     https://github.com/OleVik/grav-plugin-imgcaptions
+ */
+namespace Grav\Plugin\ImgCaptionsPlugin;
+
+use TRegx\CleanRegex\Pattern;
+use Grav\Plugin\ImgCaptionsPlugin\API\Regex;
 
 /**
- * ImgCaptions-class Unit Tests
+ * Unit Tests
  *
- * Class ImgCaptionsPlugin
- * 
- * @package Grav\Plugin
- * @return  void
- * @author  Ole Vik <git@olevik.net>
- * @license MIT License by Ole Vik
+ * @category Extensions
+ * @package  Grav\Plugin\ImgCaptionsPlugin
+ * @author   Ole Vik <git@olevik.net>
+ * @license  http://www.opensource.org/licenses/mit-license.html MIT License
+ * @link     https://github.com/OleVik/grav-plugin-imgcaptions
  */
 class ImgCaptionsTest extends \Codeception\Test\Unit
 {
@@ -36,26 +50,36 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
 
     /**
      * PCRE-pattern for parsing Markdown image-links
+     *
+     * @deprecated 3.0.0
      */
     const REGEX_MARKDOWN_LINK = '/!\[(?\'alt\'.*)\]\s?\((?\'file\'.*)(?\'ext\'.png|.gif|.jpg|.jpeg)(?\'grav\'\??(?\'type\'\?id|classes|.*)\=*.*[^"])?\s*(?:\"(?\'title\'.*)\")*\)(?\'extra\'\{.*\})?(?\'url\'___https?:\/\/.*)?/';
 
     /**
      * PCRE-pattern for parsing HTML img-tags
+     *
+     * @deprecated 3.0.0
      */
     const REGEX_IMG = "/(<img(?:(\s*(class)\s*=\s*\x22([^\x22]+)\x22*)+|[^>]+?)*>)/";
 
     /**
      * PCRE-pattern for parsing HTML img-tags in p-tags
+     *
+     * @deprecated 3.0.0
      */
     const REGEX_IMG_P = "/<p>\s*?(<a .*<img.*<\/a>|<img.*)?\s*<\/p>/";
 
     /**
      * PCRE-pattern for parsing title-attribute in HTML img-tags
+     *
+     * @deprecated 3.0.0
      */
     const REGEX_IMG_TITLE = "/<img[^>]*?title[ ]*=[ ]*[\"](.*?)[\"][^>]*?>/";
 
     /**
      * PCRE-pattern for parsing Markdown image-links wrapped in anchor-links
+     *
+     * @deprecated 3.0.0
      */
     const REGEX_IMG_WRAPPING_LINK = '/\[(?\'image\'\!.*)\]\((?\'url\'https?:\/\/.*)\)/';
 
@@ -66,7 +90,8 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
      */
     protected function _before()
     {
-        $this->parsedown = new Parsedown();
+        include __DIR__ . '/../../vendor/autoload.php';
+        $this->parsedown = new \Parsedown();
         $this->parsedown = $this->parsedown->setBreaksEnabled(true);
         $this->testData = [
             '![](image.jpg)',
@@ -87,6 +112,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
             '![Image](image.jpg "Title")',
             '![Image](image.jpg?classes=float-left "Title")',
             '![My Image](image.jpg "Title")',
+            '![My Image](image.jpg?link "Title")',
             '![My Image](image.jpg?classes=float-left "Title")',
             '![My Image](image.jpg?classes=float-left,shadow "Title")',
             '![My Image](image.jpg?id=special-id "Title")',
@@ -102,6 +128,8 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
             $this->testDataExtra[] = $data . '{attr=ibute}';
             $this->testDataExtra[] = $data . '{#id .class}';
             $this->testDataExtra[] = $data . '{#id .class attr=ibute}';
+            $this->testDataExtra[] = $data . '{#id .class1 .class2 attr=ibute}';
+            $this->testDataExtra[] = $data . '{#id .class1 .class2 attr1=ibute1 attr2=ibute2}';
         }
         $this->testDataAnchorWrappers = array();
         foreach ($this->testData as $data) {
@@ -126,6 +154,19 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     }
 
     /**
+     * Validate PCRE-patterns
+     *
+     * @return void
+     */
+    public function testValidateExpressions()
+    {
+        $Regex = new Regex();
+        foreach ($Regex::all() as $pattern) {
+            $this->assertTrue(pattern($pattern)->is()->valid());
+        }
+    }
+
+    /**
      * Test PCRE-pattern for parsing Markdown image-links
      *
      * @return void
@@ -134,7 +175,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     {
         $testData = array_merge($this->testData, $this->testDataTitles);
         foreach ($testData as $string) {
-            $this->assertRegexp($this::REGEX_MARKDOWN_LINK, $string);
+            $this->assertRegexp(Regex::markdownImage(), $string);
         }
     }
 
@@ -146,7 +187,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     public function testMarkdownExtra()
     {
         foreach ($this->testDataExtra as $string) {
-            $this->assertRegexp($this::REGEX_MARKDOWN_LINK, $string);
+            $this->assertRegexp(Regex::markdownImage(), $string);
         }
     }
 
@@ -160,7 +201,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
         $testData = array_merge($this->testData, $this->testDataTitles);
         foreach ($testData as $string) {
             $parsed = $this->parsedown->text($string);
-            $this->assertRegexp($this::REGEX_IMG, $parsed);
+            $this->assertRegexp(Regex::HTMLImage(), $parsed);
         }
     }
 
@@ -174,17 +215,20 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
         $testData = array_merge($this->testData, $this->testDataTitles);
         foreach ($testData as $string) {
             $parsed = $this->parsedown->text("\n" . $string . "\n");
-            $this->assertRegexp($this::REGEX_IMG_P, $parsed);
+            $this->assertRegexp(Regex::HTMLParagraphWrapper(), $parsed);
         }
     }
 
     /**
      * Test PCRE-pattern for parsing title-attribute in HTML img-tags
      *
+     * @deprecated 3.0.0
+     *
      * @return void
      */
     public function testImageTitles()
     {
+        return;
         foreach ($this->testDataTitles as $string) {
             $parsed = $this->parsedown->text($string);
             $this->assertRegexp($this::REGEX_IMG_TITLE, $parsed);
@@ -199,7 +243,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     public function testImageAnchorWrappers()
     {
         foreach ($this->testDataAnchorWrappers as $string) {
-            $this->assertRegexp($this::REGEX_IMG_WRAPPING_LINK, $string);
+            $this->assertRegexp(Regex::markdownAnchorWrapper(), $string);
         }
     }
 }
