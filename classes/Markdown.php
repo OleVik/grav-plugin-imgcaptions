@@ -149,7 +149,7 @@ class Markdown
         foreach ($matches as $match) {
             $attrs = array();
             $attrs['src'] = $match['file'] . '.' . $match['ext'];
-            $source = $this->source->render($attrs['src']);
+            $source = $this->source->render($attrs['src'], '/');
             $attrs['src'] = $source['src'];
             if (isset($source['filename']) && !empty($source['filename'])) {
                 $filename = $source['filename'];

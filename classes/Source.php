@@ -16,6 +16,7 @@ namespace Grav\Plugin\ImgCaptionsPlugin\API;
 use Grav\Common\Utils;
 use Grav\Common\Page\Page;
 use Grav\Common\Page\Pages;
+use Grav\Common\Page\Media;
 
 /**
  * Source API
@@ -59,19 +60,20 @@ class Source
             ];
         }
         if (Utils::contains($source, '/')) {
-            if ($prefix !== '') {
-                $page = $this->pages->get($prefix . dirname($source));
-            } else {
-                $page = $this->pages->find(dirname($source));
+            $page = $this->pages->find($prefix . dirname($source));
+            if ($page == null) {
+                $page = $this->pages->get(dirname($source));
             }
+            $media = new Media($page->path());
             return [
-                'src' => $page->url() . DS . basename($source),
+                'src' => $media->get(basename($source))->url() ?? null,
                 'filename' => basename($source) ?? null,
                 'page' => $page
             ];
         } else {
+            $media = new Media($this->page->path());
             return [
-                'src' => $this->page->url() . DS . $source,
+                'src' => $media->get($source)->url() ?? null,
                 'filename' => $source ?? null,
                 'page' => $this->page
             ];

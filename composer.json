@@ -1,5 +1,5 @@
 {
-  "name": "https://github.com/OleVik/grav-plugin-imgcaptions",
+  "name": "olevik/grav-plugin-imgcaptions",
   "description": "Grav ImgCaptions Plugin",
   "license": "MIT",
   "authors": [

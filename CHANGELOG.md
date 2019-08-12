@@ -1,3 +1,11 @@
+# v3.0.1
+## 12-08-2019
+
+1. [](#bugfix)
+   - Missing vendor-folder
+2. [](#improved)
+   - Robustness in Source API
+
 # v3.0.0
 ## 03-08-2019
 
