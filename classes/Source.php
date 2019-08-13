@@ -65,14 +65,12 @@ class Source
                 chdir($this->page->path());
                 $folder = str_replace('\\', '/', realpath($source));
                 $page = $this->pages->get(dirname($folder));
-                $media = new Media($page->path());
-                $src = $media->get(basename($source))->url() ?? null;
             } elseif (Utils::startsWith($source, '/')) {
                 $page = $this->pages->find($prefix . dirname($source));
-                $media = new Media($page->path());
-                $src = $media->get(basename($source))->url() ?? null;
             } else {
                 $page = $this->pages->find('/' . dirname($source));
+            }
+            if ($page !== null) {
                 $media = new Media($page->path());
                 $src = $media->get(basename($source))->url() ?? null;
             }
