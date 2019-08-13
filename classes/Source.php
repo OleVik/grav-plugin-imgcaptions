@@ -59,14 +59,25 @@ class Source
                 'filename' => basename($source) ?? null
             ];
         }
+        $page = $media = $src = null;
         if (Utils::contains($source, '/')) {
-            $page = $this->pages->find($prefix . dirname($source));
-            if ($page == null) {
-                $page = $this->pages->get(dirname($source));
+            if (Utils::startsWith($source, '..')) {
+                chdir($this->page->path());
+                $folder = str_replace('\\', '/', realpath($source));
+                $page = $this->pages->get(dirname($folder));
+                $media = new Media($page->path());
+                $src = $media->get(basename($source))->url() ?? null;
+            } elseif (Utils::startsWith($source, '/')) {
+                $page = $this->pages->find($prefix . dirname($source));
+                $media = new Media($page->path());
+                $src = $media->get(basename($source))->url() ?? null;
+            } else {
+                $page = $this->pages->find('/' . dirname($source));
+                $media = new Media($page->path());
+                $src = $media->get(basename($source))->url() ?? null;
             }
-            $media = new Media($page->path());
             return [
-                'src' => $media->get(basename($source))->url() ?? null,
+                'src' => $src,
                 'filename' => basename($source) ?? null,
                 'page' => $page
             ];
