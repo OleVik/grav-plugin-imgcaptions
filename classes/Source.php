@@ -59,6 +59,7 @@ class Source
                 'filename' => basename($source) ?? null
             ];
         }
+        $source = urldecode($source);
         $page = $media = $src = null;
         if (Utils::contains($source, '/')) {
             if (Utils::startsWith($source, '..')) {
@@ -70,22 +71,21 @@ class Source
             } else {
                 $page = $this->pages->find('/' . dirname($source));
             }
-            if ($page !== null) {
-                $media = new Media($page->path());
-                $src = $media->get(basename($source))->url() ?? null;
-            }
-            return [
-                'src' => $src,
-                'filename' => basename($source) ?? null,
-                'page' => $page
-            ];
         } else {
-            $media = new Media($this->page->path());
-            return [
-                'src' => $media->get($source)->url() ?? null,
-                'filename' => $source ?? null,
-                'page' => $this->page
-            ];
+            $page = $this->page;
         }
+        if ($page !== null) {
+            $media = new Media($page->path());
+            if ($media->get(basename($source))) {
+                $src = $media->get(basename($source))->url();
+            } else {
+                $src = $source;
+            }
+        }
+        return [
+            'src' => $src,
+            'filename' => basename($source) ?? null,
+            'page' => $page
+        ];
     }
 }

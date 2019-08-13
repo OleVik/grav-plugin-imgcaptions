@@ -29,6 +29,8 @@ The plugin is enabled by default, and can be disabled by copying `user/plugins/i
 
 The Page-instance, and thus Media-instance, is now available to the `partials/figure.html.twig`-template. This means more interoperability between the figure and the Page, such as getting the URL to the full image with `{{ page.media[filename].url }}`.
 
+**NOTE**: This is with a few caveats: You must use a [normal syntax for Image Linking](https://learn.getgrav.org/16/content/image-linking), your filenames should generally not contain whitespace or special characters, and be identical in both Markdown and in your files. Lastly, Grav-streams are currently not supported.
+
 ## TODO
 
 - [ ] Revise tests and test-data

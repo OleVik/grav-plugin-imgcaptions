@@ -1,3 +1,9 @@
+# v3.0.3
+## 13-08-2019
+
+1. [](#bugfix)
+   - Robustness in Source API
+
 # v3.0.2
 ## 13-08-2019
 
