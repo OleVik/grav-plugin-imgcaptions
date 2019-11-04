@@ -18,6 +18,7 @@ use Grav\Common\Page\Page;
 use Grav\Common\Twig\Twig;
 use Grav\Plugin\ImgCaptionsPlugin\API\Source;
 use Grav\Plugin\ImgCaptionsPlugin\API\Regex;
+use TRegx\CleanRegex\Match\Details\Match;
 
 /**
  * Markdown API
@@ -53,20 +54,17 @@ class Markdown
      */
     protected static function query(string $query)
     {
-        preg_match_all(
-            Regex::markdownType(),
-            $query,
-            $attributes,
-            PREG_SET_ORDER
-        );
-        $assoc = array();
-        foreach ($attributes as $attribute) {
-            if ($attribute[1]== 'classes') {
-                $attribute[1] = 'class';
-            }
-            $assoc[$attribute[1]] = $attribute[2] ?? '';
-        }
-        return $assoc;
+        return pattern(Regex::markdownType())
+            ->match($query)
+            ->flatMap(function (Match $match) {
+                $key = $match->group(1)->text();
+                if ($key == 'classes') {
+                    $key = 'class';
+                }
+                return [
+                    $key => $match->group(2)->orReturn('')
+                ];
+            });
     }
 
     /**

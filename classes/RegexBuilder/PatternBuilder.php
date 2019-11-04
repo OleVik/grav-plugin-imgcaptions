@@ -41,7 +41,6 @@ class PatternBuilder
         return $this->pattern($pattern);
     }
 
-
     /**
      * Adds a raw pattern to the pattern
      *
@@ -79,7 +78,6 @@ class PatternBuilder
     {
         return $this->symbols($symbol);
     }
-
 
     /**
      * Matches a digit character
@@ -296,7 +294,7 @@ class PatternBuilder
      *
      * @param int $start Sets the minimum number of previous characters to match
      *                   if two parameters, or the precise number if one parameter
-     * @param int $end   (optional) Sets the maximum number of previous characters
+     * @param int $end (optional) Sets the maximum number of previous characters
      *                   to match
      *
      * @return RegexBuilder\PatternBuilder
@@ -312,7 +310,7 @@ class PatternBuilder
      * Sets a character or digit range
      *
      * @param mixed $start Where to start
-     * @param mixed $end   Where to end
+     * @param mixed $end Where to end
      *
      * @return RegexBuilder\PatternBuilder
      */
@@ -437,8 +435,8 @@ class PatternBuilder
      * Matches previous pattern in a group,
      * with name set
      *
-     * @param string $name     Group name
-     * @param mixed  $callback Callback or pattern
+     * @param string $name Group name
+     * @param mixed $callback Callback or pattern
      *
      * @return string
      */
@@ -558,7 +556,7 @@ class PatternBuilder
      *
      * @param mixed $start (optional) Start of replace if two params or
      *                     the string to make optional if one param
-     * @param int   $end   (optional) End of replace
+     * @param int $end (optional) End of replace
      *
      * @return RegexBuilder\PatternBuilder
      */
@@ -581,7 +579,7 @@ class PatternBuilder
     /**
      * Makes a part of the pattern optional using a string
      *
-     * @param string $pattern  Pattern
+     * @param string $pattern Pattern
      * @param string $optional What to make optional
      *
      * @return string New pattern
@@ -599,8 +597,8 @@ class PatternBuilder
      * Makes part of the pattern using substr
      *
      * @param string $pattern Pattern
-     * @param int    $start   Where to start
-     * @param int    $end     Where to end
+     * @param int $start Where to start
+     * @param int $end Where to end
      *
      * @return string New pattern
      */
@@ -610,9 +608,8 @@ class PatternBuilder
         $optional = $this->optionalCaptionGroup($subject);
         return substr($pattern, 0, $start)
             . $optional
-            . substr($pattern, $end + $start, strlen($pattern) -1);
+            . substr($pattern, $end + $start, strlen($pattern) - 1);
     }
-
 
     /**
      * Escapes a pattern
@@ -655,7 +652,6 @@ class PatternBuilder
         return implode($pattern);
     }
 
-
     /**
      * Makes a pattern an optional caption group
      *
@@ -697,7 +693,6 @@ class PatternBuilder
         return $output;
     }
 
-
     /**
      * Matches all of the built up pattern and returns only the match
      *
@@ -729,14 +724,14 @@ class PatternBuilder
     /**
      * Replaces the matches
      *
-     * @param string $string  What to replace with
+     * @param string $string What to replace with
      * @param string $subject What to replace in
      *
      * @return string Replaced string
      */
     public function replace($string, $subject)
     {
-        return preg_replace($this->getPattern(), $string, $subject);
+        return pattern($this->getPattern())->replace($subject)->all()->with($string);
     }
 
     /**
@@ -776,7 +771,6 @@ class PatternBuilder
         $this->pattern = [];
         return $this;
     }
-
 
     /**
      * Convert the pattern to a string

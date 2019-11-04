@@ -16,6 +16,7 @@ namespace Grav\Plugin\ImgCaptionsPlugin\API;
 use Grav\Common\Page\Page;
 use Grav\Common\Twig\Twig;
 use Grav\Plugin\ImgCaptionsPlugin\API\Regex;
+use TRegx\CleanRegex\Match\Details\Match;
 
 /**
  * HTML API
@@ -51,17 +52,13 @@ class HTML
      */
     protected static function attributes(string $tag)
     {
-        preg_match_all(
-            Regex::HTMLAttributes(),
-            $tag,
-            $attributes,
-            PREG_SET_ORDER
-        );
-        $assoc = array();
-        foreach ($attributes as $attribute) {
-            $assoc[$attribute[1]] = $attribute[2];
-        }
-        return $assoc;
+        return pattern(Regex::HTMLAttributes())
+            ->match($tag)
+            ->flatMap(function (Match $match) {
+                return [
+                    $match->group(1)->text() => $match->group(2)->text()
+                ];
+            });
     }
 
     /**
@@ -73,15 +70,10 @@ class HTML
      */
     public function render(string $content)
     {
-        $content = preg_replace(Regex::HTMLParagraphWrapper(), "$1", $content);
-        preg_match_all(
-            Regex::HTMLImage(),
-            $content,
-            $matches,
-            PREG_SET_ORDER
-        );
+        $content = pattern(Regex::HTMLParagraphWrapper())->replace($content)->all()->withReferences("$1");
+        $matches = pattern(Regex::HTMLImage())->match($content)->all();
         foreach ($matches as $match) {
-            $attrs = self::attributes($match[0]);
+            $attrs = self::attributes($match);
             if (!isset($attrs['src']) && empty($attrs['src'])) {
                 continue;
             }
@@ -94,7 +86,7 @@ class HTML
                     'page' => $source['page'] ?? null
                 ]
             );
-            $content = str_replace($match[0], $replace, $content);
+            $content = str_replace($match, $replace, $content);
         }
         return $content;
     }
