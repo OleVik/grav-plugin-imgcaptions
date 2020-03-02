@@ -17,6 +17,7 @@ use Grav\Common\Utils;
 use Grav\Common\Page\Page;
 use Grav\Common\Page\Pages;
 use Grav\Common\Page\Media;
+use Grav\Common\Helpers\Excerpts;
 
 /**
  * Source API
@@ -48,10 +49,11 @@ class Source
      *
      * @param string $source Image src-attribute
      * @param string $prefix Optional prefix to Page location
+     * @param string $mediaActions Optional media actions on the image (resize, etc)
      *
      * @return array Image source, filename, and optionally Page
      */
-    public function render(string $source, string $prefix = '')
+    public function render(string $source, string $prefix = '', string $mediaActions = null)
     {
         if (filter_var($source, FILTER_VALIDATE_URL)) {
             return [
@@ -77,7 +79,11 @@ class Source
         if ($page !== null) {
             $media = new Media($page->path());
             if ($media->get(basename($source))) {
-                $src = $media->get(basename($source))->url();
+                $medium = $media->get(basename($source));
+                if ($mediaActions != null) {
+                    $medium = Excerpts::processMediaActions($medium, $mediaActions, $page);
+                }
+                $src = $medium->url();
             } else {
                 $src = $source;
             }
