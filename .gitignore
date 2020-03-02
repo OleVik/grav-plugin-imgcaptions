@@ -1,3 +1,8 @@
+# composer dependencies
+vendor/
+!vendor/composer
+!vendor/autoload.php
+
 # tests
 tests/_output/*
 tests/_support/_generated/*
