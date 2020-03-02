@@ -66,7 +66,7 @@ class Markdown
                 $attribute[1] = 'class';
             }
 
-            if (in_array($attribute[1], validAttributes)) {
+            if (in_array($attribute[1], $validAttributes)) {
                 $assoc[$attribute[1]] = $attribute[2] ?? '';
             }
         }
