@@ -1,3 +1,11 @@
+# v3.1.0
+## 19-03-2020
+
+1. [](#improved)
+   - Support media actions (#24, thanks to @A----)
+   - Automate testing (#25, thanks to @A----)
+   - Bump T-Regx (#26, thanks to @Danon)
+
 # v3.0.3
 ## 13-08-2019
 
