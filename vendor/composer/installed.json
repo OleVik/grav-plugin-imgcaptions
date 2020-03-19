@@ -343,12 +343,12 @@
         "version_normalized": "1.7.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/php-webdriver/php-webdriver.git",
+            "url": "https://github.com/php-webdriver/php-webdriver-archive.git",
             "reference": "e43de70f3c7166169d0f14a374505392734160e5"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/php-webdriver/php-webdriver/zipball/e43de70f3c7166169d0f14a374505392734160e5",
+            "url": "https://api.github.com/repos/php-webdriver/php-webdriver-archive/zipball/e43de70f3c7166169d0f14a374505392734160e5",
             "reference": "e43de70f3c7166169d0f14a374505392734160e5",
             "shasum": ""
         },
@@ -1468,17 +1468,17 @@
     },
     {
         "name": "rawr/t-regx",
-        "version": "v0.9.1",
-        "version_normalized": "0.9.1.0",
+        "version": "v0.9.5",
+        "version_normalized": "0.9.5.0",
         "source": {
             "type": "git",
             "url": "https://github.com/T-Regx/T-Regx.git",
-            "reference": "1a527fa5c0759d6a2ec4d50ed300d70f60e1d43a"
+            "reference": "9b2ff4a89b1dcc3a4bd901e3509cf06575489b0c"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/T-Regx/T-Regx/zipball/1a527fa5c0759d6a2ec4d50ed300d70f60e1d43a",
-            "reference": "1a527fa5c0759d6a2ec4d50ed300d70f60e1d43a",
+            "url": "https://api.github.com/repos/T-Regx/T-Regx/zipball/9b2ff4a89b1dcc3a4bd901e3509cf06575489b0c",
+            "reference": "9b2ff4a89b1dcc3a4bd901e3509cf06575489b0c",
             "shasum": ""
         },
         "require": {
@@ -1486,11 +1486,12 @@
             "php": ">=7.1.0"
         },
         "require-dev": {
+            "kelunik/fqn-check": "^0.1.3",
             "php-coveralls/php-coveralls": "^2.0",
             "phpunit/phpunit": "^7.5",
-            "rawr/cross-data-providers": "^1.0"
+            "rawr/cross-data-providers": "^2.1"
         },
-        "time": "2019-06-11T22:25:19+00:00",
+        "time": "2020-03-14T22:19:52+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -1509,17 +1510,22 @@
         "keywords": [
             "OOP",
             "PCRE",
-            "T-Rex",
             "TDD",
-            "TRex",
+            "automatic delimiters",
             "clean",
-            "design",
+            "delimiters",
             "expression",
             "php",
+            "preg",
+            "preg_match",
+            "preg_match_all",
+            "preg_quote",
+            "preg_replace",
+            "preg_replace_callback",
+            "prepared patterns",
             "regex",
             "regexp",
             "regular",
-            "regx",
             "t-regx"
         ]
     },
