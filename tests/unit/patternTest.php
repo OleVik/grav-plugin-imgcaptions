@@ -12,7 +12,6 @@
  */
 namespace Grav\Plugin\ImgCaptionsPlugin;
 
-use TRegx\CleanRegex\Pattern;
 use Grav\Plugin\ImgCaptionsPlugin\API\Regex;
 
 /**
@@ -162,7 +161,7 @@ class ImgCaptionsTest extends \Codeception\Test\Unit
     {
         $Regex = new Regex();
         foreach ($Regex::all() as $pattern) {
-            $this->assertTrue(pattern($pattern)->is()->valid());
+            $this->assertTrue(pattern($pattern)->valid());
         }
     }
 
