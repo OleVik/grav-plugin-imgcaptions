@@ -108,13 +108,13 @@ class ImgCaptionsPlugin extends Plugin
             return;
         }
         include __DIR__ . '/vendor/autoload.php';
-        $Source = new Source($page, $this->grav['pages']);
+        $source = new Source($page, $this->grav['pages']);
         $content = $page->getRawContent();
         if ($this->mode == 'markdown') {
-            $Markdown = new Markdown($this->grav['twig'], $Source);
+            $Markdown = new Markdown($this->grav['twig'], $source);
             $content = $Markdown->render($content);
         } elseif ($this->mode == 'html') {
-            $HTML = new HTML($this->grav['twig'], $Source);
+            $HTML = new HTML($this->grav['twig'], $source);
             $content = $HTML->render($content);
         }
         $page->setRawContent($content);

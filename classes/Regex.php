@@ -263,7 +263,7 @@ class Regex
                 }
             )
             ->pattern(self::imageExtension())
-            ->pattern(self::grav())
+            ->pattern(self::mediaActions())
             ->whitespace()
             ->zeroOrMore()
             ->pattern(self::markdownTitle())
@@ -294,10 +294,10 @@ class Regex
      *
      * @return string
      */
-    public static function grav()
+    public static function mediaActions()
     {
         return RegexBuilder::namedCapture(
-            'grav',
+            'mediaActions',
             function ($builder) {
                 return $builder
                     ->symbols('?')

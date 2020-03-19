@@ -11,7 +11,7 @@
   "require-dev": {
     "codeception/codeception": "^2.3",
     "erusev/parsedown": "^1.7",
-    "rawr/t-regx": "^0.9.1"
+    "rawr/t-regx": "0.9.1"
   },
   "scripts": {
     "test": "php vendor/Codeception/Codeception/codecept run unit"

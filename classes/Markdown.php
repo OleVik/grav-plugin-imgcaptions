@@ -60,11 +60,15 @@ class Markdown
             PREG_SET_ORDER
         );
         $assoc = array();
+        $validAttributes = array('class', 'id');
         foreach ($attributes as $attribute) {
             if ($attribute[1]== 'classes') {
                 $attribute[1] = 'class';
             }
-            $assoc[$attribute[1]] = $attribute[2] ?? '';
+
+            if (in_array($attribute[1], $validAttributes)) {
+                $assoc[$attribute[1]] = $attribute[2] ?? '';
+            }
         }
         return $assoc;
     }
@@ -99,7 +103,6 @@ class Markdown
             foreach ($attributes as $attribute) {
                 if (Utils::contains($attribute, '=')) {
                     $attribute = explode('=', $attribute);
-                    $attrs[$attribute[0]] = $attribute[1];
                     $assoc[$attribute[0]] = $attribute[1];
                 }
             }
@@ -149,7 +152,7 @@ class Markdown
         foreach ($matches as $match) {
             $attrs = array();
             $attrs['src'] = $match['file'] . '.' . $match['ext'];
-            $source = $this->source->render($attrs['src']);
+            $source = $this->source->render($attrs['src'], '', $match['mediaActions']);
             $attrs['src'] = $source['src'];
             if (isset($source['filename']) && !empty($source['filename'])) {
                 $filename = $source['filename'];
@@ -159,8 +162,8 @@ class Markdown
             }
             $attrs['alt'] = (isset($match['alt']) ? $match['alt'] : '');
             $attrs['title'] = (isset($match['title']) ? $match['title'] : '');
-            if (isset($match['grav']) && !empty($match['grav'])) {
-                $query = self::query(trim($match['grav']), '? ');
+            if (isset($match['mediaActions']) && !empty($match['mediaActions'])) {
+                $query = self::query(trim($match['mediaActions']), '? ');
                 if (!empty($query)) {
                     foreach ($query as $key => $value) {
                         $attrs[$key] = $value;
