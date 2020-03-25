@@ -4,8 +4,70 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ee1e42e076df0e62643c130afdcf22b5",
-    "packages": [],
+    "content-hash": "4253cb23bfb55ca30a935a976fd8b053",
+    "packages": [
+        {
+            "name": "rawr/t-regx",
+            "version": "v0.9.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/T-Regx/T-Regx.git",
+                "reference": "9b2ff4a89b1dcc3a4bd901e3509cf06575489b0c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/T-Regx/T-Regx/zipball/9b2ff4a89b1dcc3a4bd901e3509cf06575489b0c",
+                "reference": "9b2ff4a89b1dcc3a4bd901e3509cf06575489b0c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "kelunik/fqn-check": "^0.1.3",
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^7.5",
+                "rawr/cross-data-providers": "^2.1"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "helper/helper.php"
+                ],
+                "psr-4": {
+                    "TRegx\\": "src/TRegx"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "The most advanced PHP regexp library. Clean, descriptive wrapper functions enhancing PCRE extension methods.",
+            "keywords": [
+                "OOP",
+                "PCRE",
+                "TDD",
+                "automatic delimiters",
+                "clean",
+                "delimiters",
+                "expression",
+                "php",
+                "preg",
+                "preg_match",
+                "preg_match_all",
+                "preg_quote",
+                "preg_replace",
+                "preg_replace_callback",
+                "prepared patterns",
+                "regex",
+                "regexp",
+                "regular",
+                "t-regx"
+            ],
+            "time": "2020-03-14T22:19:52+00:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "behat/gherkin",

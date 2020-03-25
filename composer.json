@@ -21,5 +21,8 @@
       "Grav\\Plugin\\ImgCaptionsPlugin\\API\\": "classes/",
       "RegexBuilder\\": "classes/RegexBuilder/"
     }
+  },
+  "require": {
+    "rawr/t-regx": "^0.9.5"
   }
 }
