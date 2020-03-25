@@ -1,3 +1,11 @@
+# v3.1.2
+## 25-03-2020
+
+1. [](#bugfix)
+   - Revert Media-actions for now
+2. [](#improved)
+   - Variable-naming
+
 # v3.1.1
 ## 25-03-2020
 

@@ -38,10 +38,10 @@ class Source
      * @param Page  $page  Page-instance
      * @param Pages $pages Pages-instance
      */
-    public function __construct(Page $page, Pages $pages)
+    public function __construct(Page $Page, Pages $Pages)
     {
-        $this->page = $page;
-        $this->pages = $pages;
+        $this->Page = $Page;
+        $this->Pages = $Pages;
     }
 
     /**
@@ -62,28 +62,36 @@ class Source
             ];
         }
         $source = urldecode($source);
-        $page = $media = $src = null;
+        $Page = $Media = $src = null;
         if (Utils::contains($source, '/')) {
             if (Utils::startsWith($source, '..')) {
-                chdir($this->page->path());
+                chdir($this->Page->path());
                 $folder = str_replace('\\', '/', realpath($source));
-                $page = $this->pages->get(dirname($folder));
+                $Page = $this->Pages->get(dirname($folder));
             } elseif (Utils::startsWith($source, '/')) {
-                $page = $this->pages->find($prefix . dirname($source));
+                $Page = $this->Pages->find($prefix . dirname($source));
             } else {
-                $page = $this->pages->find('/' . dirname($source));
+                $Page = $this->Pages->find('/' . dirname($source));
             }
         } else {
-            $page = $this->page;
+            $Page = $this->Page;
         }
-        if ($page !== null) {
-            $media = new Media($page->path());
-            if ($media->get(basename($source))) {
-                $medium = $media->get(basename($source));
+        if ($Page !== null) {
+            $Media = new Media($Page->path());
+            if ($Media->get(basename($source))) {
+                /* WIP: Return string, not Link-object */
+                /* $Medium = $Media->get(basename($source));
                 if ($mediaActions != null) {
-                    $medium = Excerpts::processMediaActions($medium, $mediaActions, $page);
+                    $Medium = Excerpts::processMediaActions(
+                        $Medium,
+                        $mediaActions,
+                        $Page
+                    );
                 }
-                $src = $medium->url();
+                $src = $Medium->url();
+                dump($Medium);
+                exit(); */
+                $src = $Media->get(basename($source))->url();
             } else {
                 $src = $source;
             }
@@ -91,7 +99,7 @@ class Source
         return [
             'src' => $src,
             'filename' => basename($source) ?? null,
-            'page' => $page
+            'page' => $Page
         ];
     }
 }

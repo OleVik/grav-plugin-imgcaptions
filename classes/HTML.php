@@ -33,13 +33,13 @@ class HTML
     /**
      * Instantiate HTML API
      *
-     * @param Twig   $twig   Twig-instance
-     * @param Source $source Source-instance
+     * @param Twig   $Twig   Twig-instance
+     * @param Source $Source Source-instance
      */
-    public function __construct(Twig $twig, Source $source)
+    public function __construct(Twig $Twig, Source $Source)
     {
-        $this->twig = $twig;
-        $this->source = $source;
+        $this->Twig = $Twig;
+        $this->Source = $Source;
     }
 
     /**
@@ -85,13 +85,13 @@ class HTML
             if (!isset($attrs['src']) && empty($attrs['src'])) {
                 continue;
             }
-            $source = $this->source->render($attrs['src'], GRAV_ROOT);
-            $replace = $this->twig->processTemplate(
+            $Source = $this->Source->render($attrs['src'], GRAV_ROOT);
+            $replace = $this->Twig->processTemplate(
                 'partials/figure.html.twig',
                 [
                     'attrs' => $attrs,
-                    'filename' => $source['filename'],
-                    'page' => $source['page'] ?? null
+                    'filename' => $Source['filename'],
+                    'page' => $Source['page'] ?? null
                 ]
             );
             $content = str_replace($match[0], $replace, $content);

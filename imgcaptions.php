@@ -98,9 +98,9 @@ class ImgCaptionsPlugin extends Plugin
      */
     public function output(Event $event)
     {
-        $page = $event['page'];
+        $Page = $event['page'];
         $config = (array) $this->config->get('plugins.imgcaptions');
-        $header = (array) $page->header();
+        $header = (array) $Page->header();
         if (isset($header['imgcaptions'])) {
             $config = Utils::arrayMergeRecursiveUnique(
                 $config,
@@ -111,16 +111,16 @@ class ImgCaptionsPlugin extends Plugin
             return;
         }
         include __DIR__ . '/vendor/autoload.php';
-        $source = new Source($page, $this->grav['pages']);
-        $content = $page->getRawContent();
+        $Source = new Source($Page, $this->grav['pages']);
+        $content = $Page->getRawContent();
         if ($this->mode == 'markdown') {
-            $Markdown = new Markdown($this->grav['twig'], $source);
+            $Markdown = new Markdown($this->grav['twig'], $Source);
             $content = $Markdown->render($content);
         } elseif ($this->mode == 'html') {
-            $HTML = new HTML($this->grav['twig'], $source);
+            $HTML = new HTML($this->grav['twig'], $Source);
             $content = $HTML->render($content);
         }
-        $page->setRawContent($content);
+        $Page->setRawContent($content);
     }
 
     /**
