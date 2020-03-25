@@ -66,6 +66,9 @@ class ImgCaptionsPlugin extends Plugin
         if ($this->isAdmin() || $this->config->get('plugins.imgcaptions.enabled') !== true) {
             return;
         }
+        if ($this->config->get('system.pages.type') == "flex") {
+            return;
+        }
         
         $config = (array) $this->config->get('plugins.imgcaptions');
         $this->mode = $config['mode'];
