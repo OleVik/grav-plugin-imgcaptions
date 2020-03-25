@@ -1,3 +1,9 @@
+# v3.1.5
+## 25-03-2020
+
+1. [](#bugfix)
+   - Check state of MediaActions
+
 # v3.1.4
 ## 25-03-2020
 
