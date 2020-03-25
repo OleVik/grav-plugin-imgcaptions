@@ -14,7 +14,8 @@
     "rawr/t-regx": "0.9.5"
   },
   "scripts": {
-    "test": "./vendor/bin/codecept run unit"
+    "test": "./vendor/bin/codecept run unit",
+    "test-windows": "php ./vendor/Codeception/Codeception/codecept run unit"
   },
   "autoload": {
     "psr-4": {
