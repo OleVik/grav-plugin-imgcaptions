@@ -1,3 +1,9 @@
+# v3.1.3
+## 25-03-2020
+
+1. [](#bugfix)
+   - Deprecate inclusion of Rawr/T-Regx, missing file
+
 # v3.1.2
 ## 25-03-2020
 
