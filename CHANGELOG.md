@@ -1,3 +1,11 @@
+# v3.2.0
+## 28-12-2020
+
+1. [](#improved)
+   - Parse Markdown in title-attribute
+2. [](#bugfix)
+   - Non-null `event`-setting
+
 # v3.1.5
 ## 25-03-2020
 

@@ -1,5 +1,5 @@
 name: Img Captions
-version: 3.1.5
+version: 3.2.0
 description: "Turns the title-attribute in img-elements into figure-elements with a figcaption."
 icon: file-image-o
 author:
@@ -38,3 +38,13 @@ form:
       label: Event
       placeholder: Event Hook
       description: Override the default event.
+    markdown_title:
+      type: toggle
+      label: Markdown Title
+      default: 1
+      description: Parse Markdown in title-attribute.
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool

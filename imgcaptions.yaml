@@ -1,3 +1,4 @@
 enabled: true
 mode: markdown
-event:
+event: ""
+markdown_title: true

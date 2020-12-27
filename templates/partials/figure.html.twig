@@ -3,6 +3,12 @@
     <img {% for attr, value in attrs %}{{ attr ~ '="' ~ value ~ '" ' }}{% endfor %} />
     {% if url %}</a>{% endif %}
     {% if attrs.title %}
-        <figcaption>{{ attrs.title }}</figcaption>
+        <figcaption>
+        {% if config.plugins.imgcaptions.markdown_title %}
+            {{- attrs.title|markdown -}}
+        {% else %}
+            {{- attrs.title -}}
+        {% endif %}
+        </figcaption>
     {% endif %}
 </figure>
