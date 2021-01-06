@@ -10,5 +10,16 @@
             {{- attrs.title -}}
         {% endif %}
         </figcaption>
+    {% else %}
+        {# When title attribute is not defined, use the value of alt attribute of img element if defined #}
+        {% if attrs.alt %}
+            <figcaption>
+            {% if config.plugins.imgcaptions.markdown_title %}
+                {{- attrs.alt|markdown -}}
+            {% else %}
+                {{- attrs.alt -}}
+            {% endif %}
+            </figcaption>
+        {% endif %}
     {% endif %}
 </figure>
